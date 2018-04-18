@@ -90,11 +90,11 @@
             $signup = 0; //Account alredy exists with either email or mobile or both
 
         } else { //Put data into database
-
-            $query = "INSERT INTO `users`(`name`, `location`, `address`, `mobile`, `email`, `password`) VALUES('".mysqli_real_escape_string($link, $_GET['name'])."'
+            date_default_timezone_set('Asia/Kolkata');
+            $query = "INSERT INTO `users`(`name`, `location`, `address`, `mobile`, `email`, `password`, `time`) VALUES('".mysqli_real_escape_string($link, $_GET['name'])."'
             , '".mysqli_real_escape_string($link, $_GET['location'])."', '".mysqli_real_escape_string($link, $_GET['address'])."'
             , '".mysqli_real_escape_string($link, $_GET['mobile'])."', '".mysqli_real_escape_string($link, $_GET['email'])."'
-            , '". mysqli_real_escape_string($link, hash('sha512',$_GET['password']))."')"; 
+            , '". mysqli_real_escape_string($link, hash('sha512',$_GET['password']))."', '".date('d-m-Y H:i:s')."')"; 
 
             mysqli_query($link, $query);
             
@@ -128,7 +128,7 @@ This is a system generated mail. Do not reply.
 
     if($_GET['items'] == 1) { //To get the item id and item name for displaying in rent-sell dropdown
 
-        $query = "SELECT * FROM `items` WHERE id='".mysqli_real_escape_string($link, $_GET['id'])."' AND `count` > 0";
+        $query = "SELECT * FROM `items` WHERE id='".mysqli_real_escape_string($link, $_GET['id'])."' AND `count` > 0 AND `status` = 1";
 
         $result = mysqli_query($link, $query);
 
@@ -580,12 +580,14 @@ This is a system generated mail. Do not reply.
             $isubtype = $row['isubtype'];
             $counts = $count_arr[$pos];
             $description = $description_arr[$pos];
+            $id = $row['id'];
         } else {
             $oname = $row['cname'];
             $itype = $row['itype'];
             $isubtype = $row['isubtype'];
             $counts = $row['ad_count'];
             $description = $row['ad_descr'];
+            $id = $row['id'];
         }
 
     } else if($_GET['details'] == 2) { //Print details for item that is put on rent
@@ -611,12 +613,14 @@ This is a system generated mail. Do not reply.
             $counts = $count_arr[$pos];
             $description = $description_arr[$pos];
             $duration = $duration_arr[$pos];
+            $id = $row['id'];
         } else {
             $oname = $row['cname'];
             $itype = $row['itype'];
             $isubtype = $row['isubtype'];
             $counts = $row['ad_count'];
             $description = $row['ad_descr'];
+            $row['id'];
         }
 
     }
@@ -692,7 +696,7 @@ This is a system generated mail. Do not reply.
 
     if($_GET['give'] == 1) { //Items that are in your locker which can be donated
 
-        $query = "SELECT * FROM `items` WHERE id = '".mysqli_real_escape_string($link, $_GET['id'])."' AND `count` > 0";
+        $query = "SELECT * FROM `items` WHERE id = '".mysqli_real_escape_string($link, $_GET['id'])."' AND `count` > 0 AND `status` = 1";
 
         if($result = mysqli_query($link, $query)) {
 
@@ -711,9 +715,10 @@ This is a system generated mail. Do not reply.
         $query = "SELECT * FROM `items` WHERE `iid` = '".mysqli_real_escape_string($link, $_GET['iid'])."'";
 
         $row = mysqli_fetch_array(mysqli_query($link, $query));
-
-        $query = "INSERT INTO `give`(`iid`, `id`, `oname`, `iname`, `itype`, `isubtype`, `count`, `iimage`, `charity`) VALUES('".mysqli_real_escape_string($link, $_GET['iid'])."', '".mysqli_real_escape_string($link, $row['id'])."'
-        , '".mysqli_real_escape_string($link, $row['cname'])."', '".mysqli_real_escape_string($link, $row['iname'])."', '".mysqli_real_escape_string($link, $row['itype'])."', '".mysqli_real_escape_string($link, $row['isubtype'])."', '".mysqli_real_escape_string($link, $_GET['count'])."', '".mysqli_real_escape_string($link, $row['iimage'])."', '".mysqli_real_escape_string($link, $_GET['charity'])."')";
+        
+        date_default_timezone_set('Asia/Kolkata');
+        $query = "INSERT INTO `give`(`iid`, `id`, `oname`, `iname`, `itype`, `isubtype`, `count`, `iimage`, `charity`, `time`) VALUES('".mysqli_real_escape_string($link, $_GET['iid'])."', '".mysqli_real_escape_string($link, $row['id'])."'
+        , '".mysqli_real_escape_string($link, $row['cname'])."', '".mysqli_real_escape_string($link, $row['iname'])."', '".mysqli_real_escape_string($link, $row['itype'])."', '".mysqli_real_escape_string($link, $row['isubtype'])."', '".mysqli_real_escape_string($link, $_GET['count'])."', '".mysqli_real_escape_string($link, $row['iimage'])."', '".mysqli_real_escape_string($link, $_GET['charity'])."', '".date('d-m-Y H:i:s')."')";
         
         mysqli_query($link, $query);
         
@@ -848,10 +853,11 @@ This is a system generated mail. Do not reply.
     }
 
     if($_GET['locker'] == 1) { //Put items on locker
-
-        $query = "INSERT INTO `items`(`id`, `cname`, `iname`, `itype`, `isubtype`, `count`, `descr`) VALUES('".mysqli_real_escape_string($link, $_GET['id'])."', '".
+        
+        date_default_timezone_set('Asia/Kolkata');
+        $query = "INSERT INTO `items`(`id`, `cname`, `iname`, `itype`, `isubtype`, `count`, `descr`, `time`) VALUES('".mysqli_real_escape_string($link, $_GET['id'])."', '".
         mysqli_real_escape_string($link, $_GET['name'])."', '".mysqli_real_escape_string($link, $_GET['iname'])."', '".mysqli_real_escape_string($link, $_GET['type'])."'
-        , '".mysqli_real_escape_string($link, $_GET['subtype'])."', '".mysqli_real_escape_string($link, $_GET['count'])."', '".mysqli_real_escape_string($link, $_GET['descr'])."')";
+        , '".mysqli_real_escape_string($link, $_GET['subtype'])."', '".mysqli_real_escape_string($link, $_GET['count'])."', '".mysqli_real_escape_string($link, $_GET['descr'])."', '".date('d-m-Y H:i:s')."')";
 
         if(mysqli_query($link, $query)) {
             $sentMail = 1; //Item put on locker successfully
@@ -995,6 +1001,15 @@ Price for the item is '.$_GET['price'].'
         }
     }
 
+    if($_GET['blockCheck'] == 1) {
+        $query = "SELECT `block` FROM `users` WHERE `id` = '".mysqli_real_escape_string($link, $_GET['id'])."'";
+        $row = mysqli_fetch_array(mysqli_query($link, $query));
+        if($row['block'] == 1) {
+            $sentMail = 1;
+        } else {
+            $sentMail = 0;
+        }
+    }
 
     $results = Array("login" => $login, "signup" => $signup, "name" => $name, "id" => $id, "items" => $items, "item" => $item, "itemid" => $itemid, "put" => $put,
     "images" => $images, "iname" => $iname, "iid" => $iid, "oname" => $oname, "itype" => $itype, "isubtype" => $isubtype, "price" => $price, "image" => $image,
