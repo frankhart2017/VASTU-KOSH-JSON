@@ -1,6 +1,6 @@
 <?php
 
-    $link = mysqli_connect("shareddb-g.hosting.stackcp.net","vastukosh-32353f7f","password98@","vastukosh-32353f7f");
+    $link = mysqli_connect(******);
 
     $query = "UPDATE `users` SET `status` = 1 WHERE `email` = '".mysqli_real_escape_string($link, $_GET['email'])."'";
 
